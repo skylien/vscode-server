@@ -1,0 +1,62 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: code-server
+spec:
+  type: LoadBalancer
+  selector:
+    app: code-server
+  ports:
+  - protocol: TCP
+    port: 8080
+
+
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: code-server
+type: Opaque
+data:
+  username: code-server
+  password: ubutnu
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-server-deployment
+  labels:
+    app: code-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: code-server
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: code-server
+        track: stable
+    spec:
+      containers:
+      - name: code-server
+        image: $DOCKER_IMAGE_NAME
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 150
+          timeoutSeconds: 100
+          periodSeconds: 100
+        env:
+        - name: PASSWORD
+          value: "ubuntu"
+        resources:
+          requests:
+            cpu: 2
+            memory: "4Gi"
