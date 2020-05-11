@@ -5,7 +5,7 @@ pipeline {
     agent any
     environment {
         //be sure to replace "sampriyadarshi" with your own Docker Hub username
-        DOCKER_IMAGE_NAME = "skyline27042012/code-server"
+        DOCKER_IMAGE_NAME = "skylien/code-server"
         CANARY_REPLICAS = 0
     }
     stages {
